@@ -7,7 +7,7 @@ from .models import CartItem, User
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['id', 'first_name' , 'last_name', 'email', 'username',  'date_joined', 'is_active', 'is_staff', 'user_type']
+        fields = ['id', 'first_name' , 'last_name', 'email', 'password', 'username',  'date_joined', 'is_active', 'is_staff', 'user_type']
         read_only_fields = ['id', 'date_joined', 'is_active', 'is_staff']
         extra_kwargs = {
             'password': {'write_only': True}
@@ -47,24 +47,7 @@ class UserSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError("Username already exists.")
         return value
 
-    
 
-from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
-
-
-class CustomTokenSerializer(TokenObtainPairSerializer):
-    """
-    Custom serializer for token authentication.
-    """
-    def validate(self, attrs):
-        data = super().validate(attrs)
-        user = self.user
-        data['user'] = UserSerializer(user).data
-        return data
-
-    class Meta:
-        model = Token
-        fields = ['key', 'user'] 
 
 class CustomCartItemSerializer(serializers.ModelSerializer):
     '''

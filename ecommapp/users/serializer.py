@@ -7,7 +7,7 @@ from .models import CartItem, User
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['id', 'first_name' , 'last_name', 'email', 'username', 'phone_number', 'date_joined', 'is_active', 'is_staff', 'user_type']
+        fields = ['id', 'first_name' , 'last_name', 'email', 'username',  'date_joined', 'is_active', 'is_staff', 'user_type']
         read_only_fields = ['id', 'date_joined', 'is_active', 'is_staff']
         extra_kwargs = {
             'password': {'write_only': True}
@@ -17,8 +17,10 @@ class UserSerializer(serializers.ModelSerializer):
         '''
         Create a new user instance with the provided validated data.
         '''
+        password = validated_data.pop('password', None)
         user = User(**validated_data)
-        user.set_password(validated_data['password'])
+        if password:
+            user.set_password(password)
         user.save()
         return user
     
@@ -36,23 +38,18 @@ class UserSerializer(serializers.ModelSerializer):
         return instance
     
     def validate_email(self, value):
-        '''
-        Validate that the email is unique.
-        '''
-        if User.objects.filter(email=value).exists():
+        if User.objects.filter(email=value).exclude(pk=self.instance.pk if self.instance else None).exists():
             raise serializers.ValidationError("Email already exists.")
         return value
-    
+
     def validate_username(self, value):
-        '''
-        Validate that the username is unique.
-        '''
-        if User.objects.filter(username=value).exists():
+        if User.objects.filter(username=value).exclude(pk=self.instance.pk if self.instance else None).exists():
             raise serializers.ValidationError("Username already exists.")
         return value
+
     
 
-from rest_framework.authtoken.serializers import TokenObtainPairSerializer
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 
 
 class CustomTokenSerializer(TokenObtainPairSerializer):

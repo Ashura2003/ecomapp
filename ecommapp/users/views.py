@@ -7,6 +7,7 @@ from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+from .models import CartItem
 from .serializer import CustomCartItemSerializer, UserSerializer
 
 User = get_user_model()
@@ -97,7 +98,7 @@ class DeleteUserView(APIView):
         return Response(status=status.HTTP_404_NOT_FOUND)    
     
 
-class AddToCartView(APIView):
+class CartView(APIView):
     '''
     This View is used for the add to cart functionality of the app
     '''
@@ -112,6 +113,19 @@ class AddToCartView(APIView):
     def put(self, request):
         serializer = CustomCartItemSerializer(data = request.data , context = {'request': request})
         if serializer.is_valid():
+            serializer.save()
             return Response(serializer.data , status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
+    def delete(self,request, pk):
+        cart = CartItem.objects.get(pk=pk)
+        if cart:
+            cart.delete()
+            return Response({"message": "Cart item deleted successfully"}, status=status.HTTP_204_NO_CONTENT)
+        return Response({"message": "Cart item not found"}, status=status.HTTP_404_NOT_FOUND)
+    
+    def get(self, request):
+        user = request.user
+        cart_items = CartItem.objects.filter(user=user)
+        serializer = CustomCartItemSerializer(cart_items, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)

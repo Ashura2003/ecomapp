@@ -101,6 +101,17 @@ class CustomCartItemSerializer(serializers.ModelSerializer):
         instance.save()
         return instance
     
+    def get_user_cart(self):
+        '''
+        Retrieve all cart items for the given user.
+        '''
+        request = self.context.get('request')
+        user = request.user
+
+        cart = CartItem.objects.all().filter(user = user)
+
+        return cart
+    
     def validate_quantity(self, value):
         '''
         Validate that the quantity is a positive integer.

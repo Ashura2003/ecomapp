@@ -1,15 +1,14 @@
 from django.shortcuts import render
-from rest_framework import viewsets
-from rest_framework import status
-from .serializer import ItemSerializer
+from rest_framework import status, viewsets
 from rest_framework.authtoken.models import Token
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from .serializer import ItemSerializer
-from .permission import IsAdminOrSeller
 from .models import Item
+from .permission import IsAdminOrSeller
+from .serializer import ItemSerializer
+
 
 # Create your views here.
 class RegisterItemView(APIView):
@@ -52,17 +51,20 @@ class RetrieveItemView(APIView):
     
     permission_classes = [AllowAny]
 
-    def get(self):
-        try:
-            items = Item.objects.all()
-            serializer = ItemSerializer(items, many = True)
-            return Response(serializer.data , status=status.HTTP_200_OK)
-        except Item.DoesNotExist:
-            return Response({"error: Items not Found"}, status=status.HTTP_404_NOT_FOUND)
-        
     def get(self, pk):
         try:
             item = Item.objects.get(pk=pk)
         except Item.DoesNotExist:
             return Response({"error" : "Item not found"}, status=status.HTTP_404_NOT_FOUND)
         return Response(item, status=status.HTTP_200_OK)
+    
+class RetrieveAllItemsView(APIView):
+    """
+    View to retrieve all items in the e-commerce application.
+    """
+    permission_classes = [AllowAny]
+
+    def get(self, request):
+        items = Item.objects.all()
+        serializer = ItemSerializer(items, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)

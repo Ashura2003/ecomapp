@@ -29,4 +29,7 @@ class ItemSerializer(serializers.ModelSerializer):
         instance.save()
         return instance
     
-    
+    def validate_items(self, value):
+        if Item.objects.filter(name=value).exclude(pk=self.instance.pk if self.instance else None).exists:
+            raise serializers.ValidationError("Item Already Exist.")
+        return value

@@ -11,6 +11,7 @@ class User(AbstractUser):
         ('seller', 'Seller'),
     )
     user_type = models.CharField(max_length=10, choices=USERTYPE_CHOICES, default='customer')
+    created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return self.username

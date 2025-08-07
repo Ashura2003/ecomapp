@@ -21,6 +21,10 @@ class UserSerializer(serializers.ModelSerializer):
         user = User(**validated_data)
         if password:
             user.set_password(password)
+
+        if user.user_type == 'seller':
+            user.is_staff = True
+        
         user.save()
         return user
     

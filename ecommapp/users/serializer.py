@@ -1,3 +1,4 @@
+from items.models import Item
 from rest_framework import serializers
 from rest_framework.authtoken.models import Token
 
@@ -57,6 +58,16 @@ class CustomCartItemSerializer(serializers.ModelSerializer):
     '''
     Serializer for CartItem model to handle cart items in the e-commerce application.
     '''
+    user = serializers.SlugRelatedField(
+        read_only = True,
+        slug_field = 'username'
+    )
+
+    item = serializers.SlugRelatedField(
+        queryset = Item.objects.all(),
+        slug_field = 'name'
+    )
+
     class Meta:
         model = CartItem
         fields = ['id', 'user', 'item', 'quantity']
@@ -66,21 +77,21 @@ class CustomCartItemSerializer(serializers.ModelSerializer):
         '''
         Create a new cart item instance with the provided validated data.
         '''
-        user = validated_data.get('user')
+        request = self.context.get('request')
+        user = request.user  # ✅ Get the logged-in user from context
+
         item = validated_data.get('item')
-        
-        # Check if the item already exists in the user's cart
+
         cart_item, created = CartItem.objects.get_or_create(user=user, item=item)
-        
+
         if not created:
-            # If it exists, update the quantity
             cart_item.quantity += validated_data.get('quantity', 1)
         else:
-            # If it doesn't exist, set the quantity
             cart_item.quantity = validated_data.get('quantity', 1)
-        
+
         cart_item.save()
         return cart_item
+
     
     def update(self, instance, validated_data):
         '''

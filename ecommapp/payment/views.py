@@ -1,12 +1,12 @@
+import requests
 import stripe
 from decouple import config
+from django.conf import settings
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from django.conf import settings
-import requests
 
-stripe.api_key = config('STRIPE_SECRET_KEY')
+stripe.api_key = config('PAYMENT_SECRET_KEY')
 
 class PaymentAPIView(APIView):
     def post(self,request,*args,**kwargs):
@@ -25,16 +25,23 @@ class PaymentAPIView(APIView):
                 return Response({
                     'status':True,
                     'details':response.json(),
-                })
+                },
+                status=status.HTTP_200_OK
+                )
 
             else:
                 return Response({
                     'status':False,
                     'details':response.json(),
-                })
+                },
+                status=status.HTTP_400_BAD_REQUEST
+                )
 
-        except requests.exceptions.HTTPError as e:
+        except requests.exceptions.HTTPError:
             return Response({
                 'status':False,
                 'details':response.json(),
-            })
+            },
+            status=status.HTTP_400_BAD_REQUEST
+
+            )

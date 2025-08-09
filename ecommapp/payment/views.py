@@ -1,12 +1,10 @@
 import requests
-import stripe
 from decouple import config
 from django.conf import settings
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-stripe.api_key = config('PAYMENT_SECRET_KEY')
 
 class PaymentAPIView(APIView):
     def post(self,request,*args,**kwargs):

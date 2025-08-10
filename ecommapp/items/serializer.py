@@ -10,7 +10,7 @@ class ItemSerializer(serializers.ModelSerializer):
     class Meta:
         model = Item
         fields = ['id', 'name', 'description', 'price', 'stock' ]
-        read_only_fields = ['id']
+
 
     def create(self, validated_data):
         '''
@@ -28,6 +28,12 @@ class ItemSerializer(serializers.ModelSerializer):
                 setattr(instance, field, validated_data[field])
         instance.save()
         return instance
+
+    def to_representation(self, instance):
+        representation = super().to_representation(instance)
+        if not instance:
+            raise serializers.ValidationError("Item not found.")
+        return representation
 
     def validate_items(self, value):
         if Item.objects.filter(name=value).exclude(pk=self.instance.pk if self.instance else None).exists():

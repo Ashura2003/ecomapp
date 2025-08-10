@@ -1,6 +1,7 @@
 from django.urls import path
 
-from .views import *
+from .views import (RegisterItemView, RetrieveAllItemsView, RetrieveItemView,
+                    SearchItemsView)
 
 urlpatterns = [
     path('items/', RegisterItemView.as_view(), name = 'retrieve'),

@@ -7,6 +7,7 @@ class Item(models.Model):
     description = models.TextField()
     price = models.DecimalField(max_digits=10, decimal_places=2)
     stock = models.PositiveIntegerField()
+    rating = models.DecimalField(max_digits=3, decimal_places=1, default=0.0)
     
 
     def __str__(self):

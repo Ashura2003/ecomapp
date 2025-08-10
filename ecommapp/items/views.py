@@ -17,6 +17,9 @@ class RegisterItemView(APIView):
     permission_classes = [IsAdminOrSeller]
 
     def post(self, request):
+        '''
+        Register a new item in the e-commerce application. Uses POST HTTP method.
+        '''
         serializer = ItemSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
@@ -24,6 +27,9 @@ class RegisterItemView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
     def put(self, request, pk):
+        '''
+        Update an existing item in the e-commerce application. Uses PUT HTTP method.
+        '''
         try:
             item = Item.objects.get(pk=pk)
         except Item.DoesNotExist:
@@ -36,6 +42,9 @@ class RegisterItemView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
     def delete(self, pk):
+        '''
+        Delete an existing item in the e-commerce application. Uses DELETE HTTP method.
+        '''
         try:
             item = Item.objects.get(pk=pk)
         except Item.DoesNotExist:
@@ -53,6 +62,9 @@ class RetrieveItemView(APIView):
     permission_classes = [AllowAny]
 
     def get(self, pk):
+        '''
+        Retrieve an existing item in the e-commerce application. Uses GET HTTP method.
+        '''
         try:
             item = Item.objects.get(pk=pk)
         except Item.DoesNotExist:
@@ -66,6 +78,9 @@ class RetrieveAllItemsView(APIView):
     permission_classes = [AllowAny]
 
     def get(self, request):
+        '''
+        Retrieve all items in the e-commerce application. Uses GET HTTP method.
+        '''
         items = Item.objects.all()
         serializer = ItemSerializer(items, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
@@ -77,6 +92,9 @@ class SearchItemsView(APIView):
     permission_classes = [AllowAny]
 
     def get(self, request):
+        '''
+        Search for items in the e-commerce application. Uses GET HTTP method.
+        '''
         query = request.GET.get('query', '')
         try:
             items = Item.objects.filter(name__icontains=query)

@@ -25,11 +25,11 @@ class RegisterItemView(APIView):
     
     def put(self, request, pk):
         try:
-            Item.objects.get(pk = pk)
+            item = Item.objects.get(pk=pk)
         except Item.DoesNotExist:
             return Response({"error": "Item not Found"}, status=status.HTTP_404_NOT_FOUND)
         
-        serializer = ItemSerializer(data= request.data, partial = True)
+        serializer = ItemSerializer(item,data= request.data, partial = True)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_200_OK)

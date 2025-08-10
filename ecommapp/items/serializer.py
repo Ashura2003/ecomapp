@@ -22,14 +22,14 @@ class ItemSerializer(serializers.ModelSerializer):
         '''
         Update an existing item instance with the provided validated data.
         '''
-        instance.name = validated_data.get('name', instance.name)
-        instance.description = validated_data.get('description', instance.description)
-        instance.price = validated_data.get('price', instance.price)
-        instance.stock = validated_data.get('stock', instance.stock)
+        updatable_fields = ['name','description', 'price', 'rating', 'stock']
+        for field in updatable_fields:
+            if field in validated_data:
+                setattr(instance, field, validated_data[field])
         instance.save()
         return instance
-    
+
     def validate_items(self, value):
-        if Item.objects.filter(name=value).exclude(pk=self.instance.pk if self.instance else None).exists:
+        if Item.objects.filter(name=value).exclude(pk=self.instance.pk if self.instance else None).exists():
             raise serializers.ValidationError("Item Already Exist.")
         return value

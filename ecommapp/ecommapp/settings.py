@@ -25,8 +25,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = config('SECRET_KEY')
 
 # Stripe key configuration
-PAYMENT_SECRET_KEY = config('KHALTI_SECRET_KEY')
-PAYMENT_PUBLISHABLE_KEY = config('KHALTI_PUBLIC_KEY')
+PAYMENT_SECRET_KEY = config('STRIPE_SECRET_KEY')
+PAYMENT_PUBLISHABLE_KEY = config('STRIPE_PUBLIC_KEY')
 PAYMENT_VERIFY_URL = config('KHALTI_VERIFY_URL')
 
 # SECURITY WARNING: don't run with debug turned on in production!
@@ -49,7 +49,8 @@ INSTALLED_APPS = [
     'users',  # Custom users app
     'items',  # Custom items app
     'payment', # Custom payment app
-    'khalti'
+    'khalti',
+    'orders',
 ]
 
 MIDDLEWARE = [

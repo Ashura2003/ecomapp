@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from rest_framework import status, viewsets
 from rest_framework.authtoken.models import Token
+from rest_framework.decorators import action, api_view
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -66,5 +67,20 @@ class RetrieveAllItemsView(APIView):
 
     def get(self, request):
         items = Item.objects.all()
+        serializer = ItemSerializer(items, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+class SearchItemsView(APIView):
+    """
+    View to search for items in the e-commerce application.
+    """
+    permission_classes = [AllowAny]
+
+    def get(self, request):
+        query = request.GET.get('query', '')
+        try:
+            items = Item.objects.filter(name__icontains=query)
+        except Item.DoesNotExist:
+            return Response({"error": "No items found"}, status=status.HTTP_404_NOT_FOUND)
         serializer = ItemSerializer(items, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)

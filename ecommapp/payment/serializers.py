@@ -10,7 +10,7 @@ def check_expiry_month(value):
 
 def check_expiry_year(value):
     today = datetime.datetime.now()
-    if not int(value) >= today.year:
+    if int(value) < today.year:
         raise serializers.ValidationError("Invalid expiry year.")
 
 

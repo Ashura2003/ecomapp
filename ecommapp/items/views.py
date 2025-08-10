@@ -53,7 +53,7 @@ class RegisterItemView(APIView):
         try:
             item.delete()
             return Response({"message" : "Item deleted sucessfully"}, status=status.HTTP_204_NO_CONTENT)
-        except:
+        except Exception:
             return Response({"message" : "Internal Server Error"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         
     

@@ -9,7 +9,7 @@ class ItemSerializer(serializers.ModelSerializer):
     '''
     class Meta:
         model = Item
-        fields = ['id', 'name', 'description', 'price', 'stock' ]
+        fields = ['id', 'name', 'description', 'price', 'stock', 'rating' ]
 
 
     def create(self, validated_data):

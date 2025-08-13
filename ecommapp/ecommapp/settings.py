@@ -44,13 +44,15 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'rest_framework',  # Django REST Framework for API development # Custom authentication app
-    'rest_framework.authtoken',  # Token authentication for REST Framework,  # JWT authentication for REST Framework
+    'rest_framework',  # Django REST Framework for API development
+    'rest_framework.authtoken',  # Token authentication for REST Framework
+    'channels',  # Django Channels for WebSocket support
+    'khalti',  # Django Khalti for payment processing
     'users',  # Custom users app
     'items',  # Custom items app
-    'payment', # Custom payment app
-    'khalti',
-    'orders',
+    'payment',  # Custom payment app
+    'orders',  # Custom orders app
+    'chat',  # Custom chat app
 ]
 
 MIDDLEWARE = [
@@ -63,12 +65,14 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
+# REST Framework settings/ Configuration
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework.authentication.TokenAuthentication',
     ]
 }
 
+# Custom user model configuration
 AUTH_USER_MODEL = 'users.User'
 
 AUTHENTICATION_BACKENDS = ['django.contrib.auth.backends.ModelBackend']
@@ -91,12 +95,21 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'ecommapp.wsgi.application'
+# WSGI_APPLICATION = 'ecommapp.wsgi.application'
+ASGI_APPLICATION = 'ecommapp.asgi.application'
+
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        
+    }
+}
 
 
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
+# Backup SQLite3 database connection
 # DATABASES = {
 #     'default': {
 #         'ENGINE': 'django.db.backends.sqlite3',
@@ -104,6 +117,7 @@ WSGI_APPLICATION = 'ecommapp.wsgi.application'
 #     }
 # }
 
+# MySQL database connection
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',

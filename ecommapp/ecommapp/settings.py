@@ -95,7 +95,10 @@ TEMPLATES = [
     },
 ]
 
+# Backup WSGI application configuration
 # WSGI_APPLICATION = 'ecommapp.wsgi.application'
+
+# ASGI application configuration
 ASGI_APPLICATION = 'ecommapp.asgi.application'
 
 CHANNEL_LAYERS = {
